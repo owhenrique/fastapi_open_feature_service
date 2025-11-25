@@ -6,7 +6,7 @@ authors = [
     {name = "owhenrique",email = "me.pauloalmeida@gmail.com"}
 ]
 readme = "README.md"
-requires-python = ">=3.13<4"
+requires-python = ">=3.13,<4"
 dependencies = [
     "fastapi[standard] (>=0.122.0,<0.123.0)",
     "uvicorn[standard] (>=0.38.0,<0.39.0)",
@@ -16,6 +16,36 @@ dependencies = [
 [tool.poetry]
 packages = [{include = "app", from = "src"}]
 
+[tool.ruff]
+line-length = 79
+select = ['I', 'F', 'E', 'W', 'PL', 'PT', 'FAST']
+
+[tool.ruff.lint]
+preview = true
+
+[tool.ruff.format]
+preview = true
+quote-style = single
+
+[tool.pytest.ini_option]
+pythonpath = "."
+addopts = '-p no:warnings'
+
+[tool.taskipy.tasks]
+lint = 'ruff check'
+pre_format = 'ruff check --fix'
+format = 'ruff format'
+dev = 'fastapi dev src/app/main.py'
+pre_test = 'task lint'
+test = 'pytest -s -x --cov=src -vv'
+post_test = 'coverage html'
+
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[dependency-groups]
+dev = [
+    "taskipy (>=1.14.1,<2.0.0)",
+    "ruff (>=0.14.6,<0.15.0)"
+]
