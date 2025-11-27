@@ -19,10 +19,10 @@ packages = [{include = "app", from = "src"}]
 
 [tool.ruff]
 line-length = 79
-select = ['I', 'F', 'E', 'W', 'PL', 'PT', 'FAST']
 
 [tool.ruff.lint]
 preview = true
+select = ['I', 'F', 'E', 'W', 'PL', 'PT', 'FAST']
 
 [tool.ruff.format]
 preview = true
