@@ -3,20 +3,20 @@ from datetime import datetime
 from pydantic import BaseModel
 
 
-class FlagPublic(BaseModel):
+class FeatureFlagPublicSchema(BaseModel):
     description: str
     operational_status: bool
 
 
-class FlagCreate(FlagPublic):
+class FeatureFlagCreateSchema(FeatureFlagPublicSchema):
     pass
 
 
-class FlagRead(FlagPublic):
+class FeatureFlagResponseSchema(FeatureFlagPublicSchema):
     id: int
     created_at: datetime
     updated_at: datetime
 
 
-class FlagsRead(BaseModel):
-    flags: list[FlagRead]
+class FeatureFlagsResponseSchema(BaseModel):
+    flags: list[FeatureFlagResponseSchema]
