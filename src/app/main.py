@@ -1,8 +1,18 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 
 from app.api.routers import feature_flags
+from app.models.feature_flag import create_db_and_tables
 
-app = FastAPI(title='Open Feature Service')
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    create_db_and_tables()
+    yield
+
+
+app = FastAPI(title='Open Feature Service', lifespan=lifespan)
 app.include_router(feature_flags.router)
 
 
