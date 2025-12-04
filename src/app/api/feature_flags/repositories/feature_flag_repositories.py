@@ -1,6 +1,7 @@
 from typing import Sequence
+from uuid import UUID
 
-from sqlmodel import Session, select
+from sqlmodel import select
 
 from app.api.feature_flags.domain.feature_flag_models import FeatureFlag
 
@@ -9,8 +10,13 @@ class FeatureFlagRepositorie:
     def __init__(self, session):
         self._session = session
 
-    def add(self, entity: FeatureFlag):
+    def add(self, entity: FeatureFlag) -> None:
         self._session.add(entity)
+
+    def get_by_id(self, id: UUID) -> FeatureFlag | None:
+        return self._session.exec(
+            select(FeatureFlag).where(FeatureFlag.id == id)
+        ).first()
 
     def get_by_name(self, name: str) -> FeatureFlag | None:
         return self._session.exec(
@@ -24,8 +30,5 @@ class FeatureFlagRepositorie:
             )
         ).first()
 
-    @staticmethod
-    def get_all(
-        session: Session,
-    ) -> Sequence[FeatureFlag] | Sequence[None]:
-        return session.exec(select(FeatureFlag)).all()
+    def get_all(self) -> Sequence[FeatureFlag] | Sequence[None]:
+        return self._session.exec(select(FeatureFlag)).all()

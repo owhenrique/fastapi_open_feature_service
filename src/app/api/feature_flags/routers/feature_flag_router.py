@@ -1,10 +1,12 @@
 from http import HTTPStatus
+from uuid import UUID
 
 from fastapi import HTTPException
 from fastapi.routing import APIRouter
 
 from app.api.feature_flags.exceptions.feature_flag_exceptions import (
     FeatureFlagAlreadyExistsException,
+    FeatureFlagNotFoundException,
 )
 from app.api.feature_flags.schemas.feature_flag_schemas import (
     FeatureFlagCreateSchema,
@@ -34,3 +36,15 @@ async def create_flag(request: FeatureFlagCreateSchema, session: DBSession):
 )
 def read_flags(session: DBSession):
     return FeatureFlagService(session).read_all()
+
+
+@router.get(
+    '/{feature_flag_id}',
+    response_model=FeatureFlagResponseSchema,
+    status_code=HTTPStatus.OK,
+)
+def read_flag(feature_flag_id: UUID, session: DBSession):
+    try:
+        return FeatureFlagService(session).read(feature_flag_id)
+    except FeatureFlagNotFoundException as error:
+        raise HTTPException(status_code=error.code, detail=error.message)

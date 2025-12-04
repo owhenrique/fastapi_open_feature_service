@@ -1,8 +1,11 @@
+from uuid import UUID
+
 from sqlmodel import Session
 
 from app.api.feature_flags.domain.feature_flag_models import FeatureFlag
 from app.api.feature_flags.exceptions.feature_flag_exceptions import (
     FeatureFlagAlreadyExistsException,
+    FeatureFlagNotFoundException,
 )
 from app.api.feature_flags.repositories.feature_flag_repositories import (
     FeatureFlagRepositorie,
@@ -38,4 +41,12 @@ class FeatureFlagService:
         return instance
 
     def read_all(self):
-        return {'feature_flags': self._repositorie.get_all(self._session)}
+        return {'feature_flags': self._repositorie.get_all()}
+
+    def read(self, feature_flag_id: UUID) -> FeatureFlag:
+        instance = self._repositorie.get_by_id(feature_flag_id)
+
+        if instance is None:
+            raise FeatureFlagNotFoundException
+
+        return instance
