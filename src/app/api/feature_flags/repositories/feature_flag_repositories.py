@@ -6,21 +6,19 @@ from app.api.feature_flags.domain.feature_flag_models import FeatureFlag
 
 
 class FeatureFlagRepositorie:
-    @staticmethod
-    def add(session: Session, entity: FeatureFlag):
-        session.add(entity)
+    def __init__(self, session):
+        self._session = session
 
-    @staticmethod
-    def get_by_name(session: Session, name: str) -> FeatureFlag | None:
-        return session.exec(
+    def add(self, entity: FeatureFlag):
+        self._session.add(entity)
+
+    def get_by_name(self, name: str) -> FeatureFlag | None:
+        return self._session.exec(
             select(FeatureFlag).where(FeatureFlag.name == name)
         ).first()
 
-    @staticmethod
-    def get_by_technical_key(
-        session: Session, technical_key: str
-    ) -> FeatureFlag | None:
-        return session.exec(
+    def get_by_technical_key(self, technical_key: str) -> FeatureFlag | None:
+        return self._session.exec(
             select(FeatureFlag).where(
                 FeatureFlag.technical_key == technical_key
             )
