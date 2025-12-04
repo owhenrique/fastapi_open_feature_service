@@ -1,11 +1,18 @@
 from datetime import datetime
+from typing import List
+from uuid import UUID
 
 from pydantic import BaseModel
 
+from app.api.feature_flags.domain.feature_flag_models import (
+    OperationalStatusEnum,
+)
+
 
 class FeatureFlagPublicSchema(BaseModel):
-    description: str
-    operational_status: bool
+    name: str
+    technical_key: str
+    operational_status: OperationalStatusEnum
 
 
 class FeatureFlagCreateSchema(FeatureFlagPublicSchema):
@@ -13,10 +20,10 @@ class FeatureFlagCreateSchema(FeatureFlagPublicSchema):
 
 
 class FeatureFlagResponseSchema(FeatureFlagPublicSchema):
-    id: int
+    id: UUID
     created_at: datetime
     updated_at: datetime
 
 
 class FeatureFlagsResponseSchema(BaseModel):
-    flags: list[FeatureFlagResponseSchema]
+    feature_flags: List[FeatureFlagResponseSchema]
