@@ -1,13 +1,13 @@
 from sqlmodel import Session
 
-from app.api.feature_flags.domain.feature_flag_exceptions import (
-    FeatureFlagAlreadyExistsException,
-)
 from app.api.feature_flags.domain.feature_flag_models import FeatureFlag
 from app.api.feature_flags.domain.feature_flag_repositories import (
     FeatureFlagRepositorie,
 )
-from app.api.feature_flags.domain.feature_flag_schemas import (
+from app.api.feature_flags.exceptions.feature_flag_exceptions import (
+    FeatureFlagAlreadyExistsException,
+)
+from app.api.feature_flags.schemas.feature_flag_schemas import (
     FeatureFlagCreateSchema,
 )
 
@@ -18,14 +18,16 @@ class FeatureFlagService:
         self._repositorie = FeatureFlagRepositorie()
 
     def create(self, feature_flag: FeatureFlagCreateSchema) -> FeatureFlag:
+        # Todo: change featureflagcreateschema to feature flag entity/model
+        # decloupling
         if (
             self._repositorie.get_by_name(self._session, feature_flag.name)
             is not None
-            or self._repositorie.get_by_technical_key(
+        ) or (
+            self._repositorie.get_by_technical_key(
                 self._session, feature_flag.technical_key
             )
-            is not None
-        ):
+        ) is not None:
             raise FeatureFlagAlreadyExistsException
 
         instance = FeatureFlag(

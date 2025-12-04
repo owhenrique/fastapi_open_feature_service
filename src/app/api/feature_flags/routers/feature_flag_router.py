@@ -3,15 +3,17 @@ from http import HTTPStatus
 from fastapi import HTTPException
 from fastapi.routing import APIRouter
 
-from app.api.feature_flags.domain.feature_flag_exceptions import (
+from app.api.feature_flags.exceptions.feature_flag_exceptions import (
     FeatureFlagAlreadyExistsException,
 )
-from app.api.feature_flags.domain.feature_flag_schemas import (
+from app.api.feature_flags.schemas.feature_flag_schemas import (
     FeatureFlagCreateSchema,
     FeatureFlagResponseSchema,
     FeatureFlagsResponseSchema,
 )
-from app.api.feature_flags.feature_flag_services import FeatureFlagService
+from app.api.feature_flags.services.feature_flag_services import (
+    FeatureFlagService,
+)
 from app.core.database import DBSession
 
 router = APIRouter(prefix='/feature-flags', tags=['Feature Flags'])
@@ -23,8 +25,8 @@ router = APIRouter(prefix='/feature-flags', tags=['Feature Flags'])
 async def create_flag(request: FeatureFlagCreateSchema, session: DBSession):
     try:
         return FeatureFlagService(session).create(request)
-    except FeatureFlagAlreadyExistsException as e:
-        raise HTTPException(status_code=e.code, detail=e.message)
+    except FeatureFlagAlreadyExistsException as error:
+        raise HTTPException(status_code=error.code, detail=error.message)
 
 
 @router.get(

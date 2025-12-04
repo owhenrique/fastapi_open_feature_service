@@ -15,7 +15,7 @@ class OperationalStatusEnum(StrEnum):
 
 
 class FeatureFlag(TimeStampMixin, table=True):
-    """ """
+    # Todo: write this model a docstring
 
     id: UUID = Field(default_factory=uuid4, primary_key=True)
     name: str = Field(unique=True)

@@ -12,11 +12,9 @@ class FeatureFlagRepositorie:
 
     @staticmethod
     def get_by_name(session: Session, name: str) -> FeatureFlag | None:
-        instance = session.exec(
+        return session.exec(
             select(FeatureFlag).where(FeatureFlag.name == name)
         ).first()
-
-        return instance
 
     @staticmethod
     def get_by_technical_key(

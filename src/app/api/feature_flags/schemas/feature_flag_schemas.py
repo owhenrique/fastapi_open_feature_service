@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import List
 from uuid import UUID
 
 from pydantic import BaseModel
@@ -26,4 +25,4 @@ class FeatureFlagResponseSchema(FeatureFlagPublicSchema):
 
 
 class FeatureFlagsResponseSchema(BaseModel):
-    feature_flags: List[FeatureFlagResponseSchema]
+    feature_flags: list[FeatureFlagResponseSchema]
