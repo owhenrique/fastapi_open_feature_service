@@ -4,19 +4,19 @@ from uuid import UUID
 from fastapi import HTTPException
 from fastapi.routing import APIRouter
 
-from app.api.feature_flags.exceptions.feature_flag_exceptions import (
+from src.app.api.feature_flags.exceptions.feature_flag_exceptions import (
     FeatureFlagAlreadyExistsException,
     FeatureFlagNotFoundException,
 )
-from app.api.feature_flags.schemas.feature_flag_schemas import (
+from src.app.api.feature_flags.schemas.feature_flag_schemas import (
     FeatureFlagCreateSchema,
     FeatureFlagResponseSchema,
     FeatureFlagsResponseSchema,
 )
-from app.api.feature_flags.services.feature_flag_services import (
+from src.app.api.feature_flags.services.feature_flag_services import (
     FeatureFlagService,
 )
-from app.core.database import DBSession
+from src.app.core.database import DBSession
 
 router = APIRouter(prefix='/feature-flags', tags=['Feature Flags'])
 
@@ -45,6 +45,6 @@ def read_flags(session: DBSession):
 )
 def read_flag(feature_flag_id: UUID, session: DBSession):
     try:
-        return FeatureFlagService(session).read(feature_flag_id)
+        return FeatureFlagService(session).read_one(feature_flag_id)
     except FeatureFlagNotFoundException as error:
         raise HTTPException(status_code=error.code, detail=error.message)

@@ -1,6 +1,6 @@
 from http import HTTPStatus
 
-from app.core.exceptions import CustomException
+from src.app.core.exceptions import CustomException
 
 
 class FeatureFlagAlreadyExistsException(CustomException):

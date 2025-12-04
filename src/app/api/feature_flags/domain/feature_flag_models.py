@@ -3,7 +3,7 @@ from uuid import UUID, uuid4
 
 from sqlmodel import Field
 
-from app.models.timestamp_mixin import TimeStampMixin
+from src.app.models.timestamp_mixin import TimeStampMixin
 
 
 class OperationalStatusEnum(StrEnum):

@@ -3,7 +3,7 @@ from uuid import UUID
 
 from sqlmodel import select
 
-from app.api.feature_flags.domain.feature_flag_models import FeatureFlag
+from src.app.api.feature_flags.domain.feature_flag_models import FeatureFlag
 
 
 class FeatureFlagRepositorie:

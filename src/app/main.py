@@ -2,10 +2,10 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from app.api.feature_flags.routers.feature_flag_router import (
+from src.app.api.feature_flags.routers.feature_flag_router import (
     router as feature_flag_router,
 )
-from app.core.database import create_db_and_tables
+from src.app.core.database import create_db_and_tables
 
 
 @asynccontextmanager

@@ -29,7 +29,7 @@ preview = true
 quote-style = 'single'
 
 [tool.pytest.ini_option]
-pythonpath = "."
+pythonpath = ["src"]
 addopts = '-p no:warnings'
 
 [tool.taskipy.tasks]
@@ -38,7 +38,7 @@ pre_format = 'ruff check --fix'
 format = 'ruff format'
 dev = 'fastapi dev src/app/main.py'
 pre_test = 'task lint'
-test = 'pytest -s -x --cov=src -vv'
+test = 'pytest -s -x --cov=src/app -vv'
 post_test = 'coverage html'
 
 [build-system]
@@ -48,5 +48,7 @@ build-backend = "poetry.core.masonry.api"
 [dependency-groups]
 dev = [
     "taskipy (>=1.14.1,<2.0.0)",
-    "ruff (>=0.14.6,<0.15.0)"
+    "ruff (>=0.14.6,<0.15.0)",
+    "pytest (>=9.0.1,<10.0.0)",
+    "pytest-cov (>=7.0.0,<8.0.0)"
 ]

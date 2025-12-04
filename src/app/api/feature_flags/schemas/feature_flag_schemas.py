@@ -3,7 +3,7 @@ from uuid import UUID
 
 from pydantic import BaseModel
 
-from app.api.feature_flags.domain.feature_flag_models import (
+from src.app.api.feature_flags.domain.feature_flag_models import (
     OperationalStatusEnum,
 )
 
