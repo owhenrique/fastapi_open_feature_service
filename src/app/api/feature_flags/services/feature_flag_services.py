@@ -16,24 +16,6 @@ from src.app.api.feature_flags.schemas.feature_flag_schemas import (
 )
 
 
-def name_already_exists(
-    repositorie: FeatureFlagRepositorie, name: str
-) -> bool:
-    if repositorie.get_by_name(name) is not None:
-        return True
-
-    return False
-
-
-def technical_key_already_exists(
-    repositorie: FeatureFlagRepositorie, technical_key: str
-) -> bool:
-    if repositorie.get_by_technical_key(technical_key) is not None:
-        return True
-
-    return False
-
-
 class FeatureFlagService:
     def __init__(self, session: Session):
         self._session = session
@@ -42,12 +24,9 @@ class FeatureFlagService:
     def create(self, feature_flag: FeatureFlagCreateSchema) -> FeatureFlag:
         # Todo: change featureflagcreateschema to feature flag entity/model
         # decloupling
-        if (
-            self._repositorie.get_by_name_or_technical_key(
-                feature_flag.name, feature_flag.technical_key
-            )
-            is not None
-        ):
+        if self._repositorie.get_by_name_or_technical_key(
+            feature_flag.name, feature_flag.technical_key
+        ) is not None:
             raise FeatureFlagAlreadyExistsException
 
         instance = FeatureFlag(
@@ -81,15 +60,9 @@ class FeatureFlagService:
         if instance is None:
             raise FeatureFlagNotFoundException
 
-        if (
-            feature_flag.name
-            and name_already_exists(self._repositorie, feature_flag.name)
-        ) or (
-            feature_flag.technical_key
-            and technical_key_already_exists(
-                self._repositorie, feature_flag.technical_key
-            )
-        ):
+        if self._repositorie.get_by_name_or_technical_key(
+            feature_flag.name, feature_flag.technical_key
+        ) is not None:
             raise FeatureFlagAlreadyExistsException
 
         if feature_flag.name:
