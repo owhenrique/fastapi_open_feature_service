@@ -12,6 +12,7 @@ from src.app.api.feature_flags.schemas.feature_flag_schemas import (
     FeatureFlagCreateSchema,
     FeatureFlagResponseSchema,
     FeatureFlagsResponseSchema,
+    FeatureFlagUpdateSchema,
 )
 from src.app.api.feature_flags.services.feature_flag_services import (
     FeatureFlagService,
@@ -22,7 +23,9 @@ router = APIRouter(prefix='/feature-flags', tags=['Feature Flags'])
 
 
 @router.post(
-    '/', response_model=FeatureFlagResponseSchema, status_code=HTTPStatus.OK
+    '/',
+    response_model=FeatureFlagResponseSchema,
+    status_code=HTTPStatus.CREATED,
 )
 async def create_flag(request: FeatureFlagCreateSchema, session: DBSession):
     try:
@@ -47,4 +50,25 @@ def read_flag(feature_flag_id: UUID, session: DBSession):
     try:
         return FeatureFlagService(session).read_one(feature_flag_id)
     except FeatureFlagNotFoundException as error:
+        raise HTTPException(status_code=error.code, detail=error.message)
+
+
+@router.put(
+    '/{feature_flag_id}',
+    response_model=FeatureFlagResponseSchema,
+    status_code=HTTPStatus.OK,
+)
+def update_flag(
+    feature_flag_id: UUID,
+    feature_flag: FeatureFlagUpdateSchema,
+    session: DBSession,
+):
+    try:
+        return FeatureFlagService(session).update(
+            feature_flag_id, feature_flag
+        )
+    except (
+        FeatureFlagAlreadyExistsException,
+        FeatureFlagNotFoundException,
+    ) as error:
         raise HTTPException(status_code=error.code, detail=error.message)

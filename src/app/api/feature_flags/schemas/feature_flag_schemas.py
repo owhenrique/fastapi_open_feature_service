@@ -18,6 +18,12 @@ class FeatureFlagCreateSchema(FeatureFlagPublicSchema):
     pass
 
 
+class FeatureFlagUpdateSchema(BaseModel):
+    name: str | None = None
+    technical_key: str | None = None
+    operational_status: OperationalStatusEnum | None = None
+
+
 class FeatureFlagResponseSchema(FeatureFlagPublicSchema):
     id: UUID
     created_at: datetime

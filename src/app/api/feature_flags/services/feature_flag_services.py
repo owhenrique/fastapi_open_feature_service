@@ -12,7 +12,26 @@ from src.app.api.feature_flags.repositories.feature_flag_repositories import (
 )
 from src.app.api.feature_flags.schemas.feature_flag_schemas import (
     FeatureFlagCreateSchema,
+    FeatureFlagUpdateSchema,
 )
+
+
+def name_already_exists(
+    repositorie: FeatureFlagRepositorie, name: str
+) -> bool:
+    if repositorie.get_by_name(name) is not None:
+        return True
+
+    return False
+
+
+def technical_key_already_exists(
+    repositorie: FeatureFlagRepositorie, technical_key: str
+) -> bool:
+    if repositorie.get_by_technical_key(technical_key) is not None:
+        return True
+
+    return False
 
 
 class FeatureFlagService:
@@ -23,9 +42,11 @@ class FeatureFlagService:
     def create(self, feature_flag: FeatureFlagCreateSchema) -> FeatureFlag:
         # Todo: change featureflagcreateschema to feature flag entity/model
         # decloupling
-        if (self._repositorie.get_by_name(feature_flag.name) is not None) or (
-            self._repositorie.get_by_technical_key(feature_flag.technical_key)
-        ) is not None:
+        if name_already_exists(self._repositorie, feature_flag.name) or (
+            technical_key_already_exists(
+                self._repositorie, feature_flag.technical_key
+            )
+        ):
             raise FeatureFlagAlreadyExistsException
 
         instance = FeatureFlag(
@@ -48,5 +69,37 @@ class FeatureFlagService:
 
         if instance is None:
             raise FeatureFlagNotFoundException
+
+        return instance
+
+    def update(
+        self, feature_flag_id: UUID, feature_flag: FeatureFlagUpdateSchema
+    ) -> FeatureFlag:
+        instance = self._repositorie.get_by_id(feature_flag_id)
+
+        if instance is None:
+            raise FeatureFlagNotFoundException
+
+        if (
+            feature_flag.name
+            and name_already_exists(self._repositorie, feature_flag.name)
+        ) or (
+            feature_flag.technical_key
+            and technical_key_already_exists(
+                self._repositorie, feature_flag.technical_key
+            )
+        ):
+            raise FeatureFlagAlreadyExistsException
+
+        if feature_flag.name:
+            instance.name = feature_flag.name
+        if feature_flag.technical_key:
+            instance.technical_key = feature_flag.technical_key
+        if feature_flag.operational_status:
+            instance.operational_status = feature_flag.operational_status
+
+        self._repositorie.update(instance)
+        self._session.commit()
+        self._session.refresh(instance)
 
         return instance

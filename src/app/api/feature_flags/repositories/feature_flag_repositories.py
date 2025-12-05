@@ -32,3 +32,6 @@ class FeatureFlagRepositorie:
 
     def get_all(self) -> Sequence[FeatureFlag] | Sequence[None]:
         return self._session.exec(select(FeatureFlag)).all()
+
+    def update(self, entity: FeatureFlag) -> None:
+        self._session.add(entity)
