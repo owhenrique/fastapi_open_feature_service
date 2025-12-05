@@ -42,10 +42,11 @@ class FeatureFlagService:
     def create(self, feature_flag: FeatureFlagCreateSchema) -> FeatureFlag:
         # Todo: change featureflagcreateschema to feature flag entity/model
         # decloupling
-        if name_already_exists(self._repositorie, feature_flag.name) or (
-            technical_key_already_exists(
-                self._repositorie, feature_flag.technical_key
+        if (
+            self._repositorie.get_by_name_or_technical_key(
+                feature_flag.name, feature_flag.technical_key
             )
+            is not None
         ):
             raise FeatureFlagAlreadyExistsException
 
