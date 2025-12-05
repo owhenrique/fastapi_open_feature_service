@@ -72,3 +72,11 @@ def update_flag(
         FeatureFlagNotFoundException,
     ) as error:
         raise HTTPException(status_code=error.code, detail=error.message)
+
+
+@router.delete('/{feature_flag_id}', status_code=HTTPStatus.NO_CONTENT)
+def delete_flag(feature_flag_id: UUID, session: DBSession):
+    try:
+        return FeatureFlagService(session).delete(feature_flag_id)
+    except FeatureFlagNotFoundException as error:
+        raise HTTPException(status_code=error.code, detail=error.message)

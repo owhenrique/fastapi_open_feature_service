@@ -35,3 +35,6 @@ class FeatureFlagRepositorie:
 
     def update(self, entity: FeatureFlag) -> None:
         self._session.add(entity)
+
+    def delete(self, entity: FeatureFlag) -> None:
+        self._session.delete(entity)

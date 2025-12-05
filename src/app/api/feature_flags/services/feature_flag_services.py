@@ -103,3 +103,12 @@ class FeatureFlagService:
         self._session.refresh(instance)
 
         return instance
+
+    def delete(self, feature_flag_id: UUID) -> None:
+        instance = self._repositorie.get_by_id(feature_flag_id)
+
+        if instance is None:
+            raise FeatureFlagNotFoundException
+
+        self._repositorie.delete(instance)
+        self._session.commit()
