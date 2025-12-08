@@ -1,7 +1,7 @@
 from datetime import datetime
 from uuid import UUID
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 from src.app.api.feature_flags.domain.feature_flag_models import (
     OperationalStatusEnum,
@@ -29,6 +29,10 @@ class FeatureFlagResponseSchema(FeatureFlagPublicSchema):
     created_at: datetime
     updated_at: datetime
 
+    model_config = ConfigDict(from_attributes=True)
+
 
 class FeatureFlagsResponseSchema(BaseModel):
     feature_flags: list[FeatureFlagResponseSchema]
+
+    model_config = ConfigDict(from_attributes=True)

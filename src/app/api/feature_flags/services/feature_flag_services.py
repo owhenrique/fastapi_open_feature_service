@@ -24,9 +24,12 @@ class FeatureFlagService:
     def create(self, feature_flag: FeatureFlagCreateSchema) -> FeatureFlag:
         # Todo: change featureflagcreateschema to feature flag entity/model
         # decloupling
-        if self._repositorie.get_by_name_or_technical_key(
-            feature_flag.name, feature_flag.technical_key
-        ) is not None:
+        if (
+            self._repositorie.get_by_name_or_technical_key(
+                feature_flag.name, feature_flag.technical_key
+            )
+            is not None
+        ):
             raise FeatureFlagAlreadyExistsException
 
         instance = FeatureFlag(
@@ -59,10 +62,13 @@ class FeatureFlagService:
 
         if instance is None:
             raise FeatureFlagNotFoundException
-
-        if self._repositorie.get_by_name_or_technical_key(
-            feature_flag.name, feature_flag.technical_key
-        ) is not None:
+        # Todo: check if the user found is different than the actual user
+        if (
+            self._repositorie.get_by_name_or_technical_key(
+                feature_flag.name, feature_flag.technical_key
+            )
+            is not None
+        ):
             raise FeatureFlagAlreadyExistsException
 
         if feature_flag.name:
