@@ -8,7 +8,7 @@ from sqlalchemy import event
 from sqlmodel import Session, SQLModel, create_engine
 from sqlmodel.pool import StaticPool
 
-from app.api.feature_flags.domain.flag_model import (
+from app.api.v1.feature_flags.domain.flag_model import (
     Flag,
     OperationalStatusEnum,
 )

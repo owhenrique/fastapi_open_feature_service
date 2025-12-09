@@ -38,24 +38,24 @@ Garantir consistência arquitetural, eliminar duplicações, corrigir incoerênc
 - [ ] Centralizar validações de negócio
 - [ ] Assegurar que nenhum método viole:
   - [ ] "Service não pode conter SQL"
-  - [ ] "Repository não pode conter regras de negócio"
-- [ ] Revisar mensagens e códigos de exceção
+  - [x] "Repository não pode conter regras de negócio"
+- [x] Revisar mensagens e códigos de exceção
 
 ---
 
 ## 🧩 Parte 4 — Ajustes nas Rotas
 - [ ] Verificar nomes das rotas
 - [ ] Verificar assinaturas das path operations
-- [ ] Garantir que **nenhuma** validação de negócio esteja nas rotas
-- [ ] Garantir padronização do uso de `HTTPException`
+- [x] Garantir que **nenhuma** validação de negócio esteja nas rotas
+- [x] Garantir padronização do uso de `HTTPException`
 
 ---
 
 ## 🧩 Parte 5 — Ajustes de Consistência Geral
 - [x] Padronizar nomes dos arquivos:
-  - [ ] Nada verboso demais
+  - [x] Nada verboso demais
   - [ ] Não usar nomes inconsistentes (ex.: `repositorie`)
-- [ ] Ajustar imports quebrados
+- [x] Ajustar imports quebrados
 - [ ] Verificar docstrings
 - [ ] Revisar exceções criadas na task 006
 - [ ] Revisar DTOs de entrada/saída

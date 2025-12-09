@@ -3,18 +3,18 @@ from http import HTTPStatus
 from fastapi import HTTPException
 from fastapi.routing import APIRouter
 
-from app.api.feature_flags.exceptions.flag_exceptions import (
+from app.api.v1.feature_flags.exceptions.flag_exceptions import (
     FlagNameAlreadyExistsException,
     FlagNotFoundException,
     FlagTechnicalKeyAlreadyExistsException,
 )
-from app.api.feature_flags.schemas.flag_schemas import (
+from app.api.v1.feature_flags.schemas.flag_schemas import (
     FlagCreateSchema,
     FlagResponseSchema,
     FlagsResponseSchema,
     FlagUpdateSchema,
 )
-from app.api.feature_flags.services.flag_service import (
+from app.api.v1.feature_flags.services.flag_service import (
     FlagService,
 )
 from src.app.core.database import DBSession

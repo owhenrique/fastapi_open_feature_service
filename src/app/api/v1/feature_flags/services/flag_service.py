@@ -1,24 +1,26 @@
+from typing import Sequence
+
 from sqlmodel import Session
 
-from app.api.feature_flags.domain.flag_model import Flag
-from app.api.feature_flags.exceptions.flag_exceptions import (
+from app.api.v1.feature_flags.domain.flag_model import Flag
+from app.api.v1.feature_flags.exceptions.flag_exceptions import (
     FlagNameAlreadyExistsException,
     FlagNotFoundException,
     FlagTechnicalKeyAlreadyExistsException,
 )
-from app.api.feature_flags.repositories.flag_repositorie import (
+from app.api.v1.feature_flags.repositories.flag_repositorie import (
     FlagRepositorie,
 )
-from app.api.feature_flags.schemas.flag_schemas import (
+from app.api.v1.feature_flags.schemas.flag_schemas import (
     FlagCreateSchema,
     FlagUpdateSchema,
 )
+from app.api.v1.feature_flags.services.abstract_service import AbstractService
 
 
-class FlagService:
+class FlagService(AbstractService):
     def __init__(self, session: Session):
-        self._session = session
-        self._repositorie = FlagRepositorie(self._session)
+        super().__init__(session, FlagRepositorie(session))
 
     def create(self, flag: FlagCreateSchema) -> Flag:
         # Todo: change featureflagcreateschema to feature flag entity/model
@@ -44,7 +46,7 @@ class FlagService:
 
         return instance
 
-    def read_all(self):
+    def read_all(self) -> Sequence[Flag]:
         return self._repositorie.get_all()
 
     def read_one(self, technical_key: str) -> Flag:

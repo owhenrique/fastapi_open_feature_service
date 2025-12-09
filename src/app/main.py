@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from app.api.feature_flags.routers.flag_router import (
+from app.api.v1.feature_flags.routers.flag_router import (
     router as feature_flag_router,
 )
 from src.app.core.database import create_db_and_tables
@@ -15,7 +15,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title='Open Feature Service', lifespan=lifespan)
-app.include_router(feature_flag_router)
+app.include_router(prefix='/v1', router=feature_flag_router)
 
 
 @app.get('/')

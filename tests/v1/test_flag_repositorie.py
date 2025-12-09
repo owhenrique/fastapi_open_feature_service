@@ -1,7 +1,7 @@
 from sqlmodel import Session
 
-from app.api.feature_flags.domain.flag_model import Flag
-from app.api.feature_flags.repositories.flag_repositorie import (
+from app.api.v1.feature_flags.domain.flag_model import Flag
+from app.api.v1.feature_flags.repositories.flag_repositorie import (
     FlagRepositorie,
 )
 

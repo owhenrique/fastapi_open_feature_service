@@ -2,8 +2,8 @@ from http import HTTPStatus
 
 from fastapi.testclient import TestClient
 
-from app.api.feature_flags.domain.flag_model import Flag
-from app.api.feature_flags.schemas.flag_schemas import FlagResponseSchema
+from app.api.v1.feature_flags.domain.flag_model import Flag
+from app.api.v1.feature_flags.schemas.flag_schemas import FlagResponseSchema
 
 
 def test_create_should_return_created_and_flag(client: TestClient):
@@ -13,7 +13,7 @@ def test_create_should_return_created_and_flag(client: TestClient):
         'operational_status': 'off',
     }
 
-    response = client.post('/feature-flags/', json=payload)
+    response = client.post('/v1/feature-flags/', json=payload)
 
     assert response.status_code == HTTPStatus.CREATED
     data = response.json()
@@ -29,7 +29,7 @@ def test_create_should_return_bad_request_and_name_already_exists_exception(
         'operational_status': 'off',
     }
 
-    response = client.post('/feature-flags/', json=payload)
+    response = client.post('/v1/feature-flags/', json=payload)
 
     assert response.status_code == HTTPStatus.BAD_REQUEST
     assert response.json() == {'detail': 'flag name already exists'}
@@ -44,7 +44,7 @@ def test_create_should_return_bad_request_and_t_k_already_exists_exception(
         'operational_status': 'off',
     }
 
-    response = client.post('/feature-flags/', json=payload)
+    response = client.post('/v1/feature-flags/', json=payload)
 
     assert response.status_code == HTTPStatus.BAD_REQUEST
     assert response.json() == {'detail': 'flag technical key already exists'}
@@ -56,7 +56,7 @@ def test_read_all_should_return_ok_and_flags_list(
     flag_schema = FlagResponseSchema.model_validate(flag).model_dump(
         mode='json'
     )
-    response = client.get('/feature-flags/')
+    response = client.get('/v1/feature-flags/')
 
     assert response.status_code == HTTPStatus.OK
     assert response.json() == {'flags': [flag_schema]}
@@ -66,14 +66,14 @@ def test_read_should_return_ok_and_flag(client: TestClient, flag: Flag):
     flag_schema = FlagResponseSchema.model_validate(flag).model_dump(
         mode='json'
     )
-    response = client.get(f'/feature-flags/{flag.technical_key}')
+    response = client.get(f'/v1/feature-flags/{flag.technical_key}')
 
     assert response.status_code == HTTPStatus.OK
     assert response.json() == flag_schema
 
 
 def test_read_should_return_not_found(client: TestClient):
-    response = client.get('/feature-flags/other-flag')
+    response = client.get('/v1/feature-flags/other-flag')
 
     assert response.status_code == HTTPStatus.NOT_FOUND
     assert response.json() == {'detail': 'flag not found'}
@@ -86,7 +86,9 @@ def test_update_should_return_ok_and_flag(client: TestClient, flag: Flag):
         'operational_status': 'on',
     }
 
-    response = client.put(f'/feature-flags/{flag.technical_key}', json=payload)
+    response = client.put(
+        f'/v1/feature-flags/{flag.technical_key}', json=payload
+    )
     db_flag = response.json()
 
     flag_schema = FlagResponseSchema.model_validate(db_flag).model_dump(
@@ -104,7 +106,7 @@ def test_update_should_return_not_found(client: TestClient):
         'technical_key': 'another-tf00',
         'operational_status': 'on',
     }
-    response = client.put('/feature-flags/another-flag', json=payload)
+    response = client.put('/v1/feature-flags/another-flag', json=payload)
 
     assert response.status_code == HTTPStatus.NOT_FOUND
     assert response.json() == {'detail': 'flag not found'}
@@ -119,7 +121,9 @@ def test_update_name_already_exists_should_return_bad_request(
         'operational_status': 'on',
     }
 
-    response = client.put(f'/feature-flags/{flag.technical_key}', json=payload)
+    response = client.put(
+        f'/v1/feature-flags/{flag.technical_key}', json=payload
+    )
 
     assert response.status_code == HTTPStatus.BAD_REQUEST
     assert response.json() == {'detail': 'flag name already exists'}
@@ -134,20 +138,22 @@ def test_update_technical_key_already_exists_should_return_bad_request(
         'operational_status': 'on',
     }
 
-    response = client.put(f'/feature-flags/{flag.technical_key}', json=payload)
+    response = client.put(
+        f'/v1/feature-flags/{flag.technical_key}', json=payload
+    )
 
     assert response.status_code == HTTPStatus.BAD_REQUEST
     assert response.json() == {'detail': 'flag technical key already exists'}
 
 
 def test_delete_should_return_no_content(client: TestClient, flag: Flag):
-    response = client.delete(f'/feature-flags/{flag.technical_key}')
+    response = client.delete(f'/v1/feature-flags/{flag.technical_key}')
 
     assert response.status_code == HTTPStatus.NO_CONTENT
 
 
 def test_delete_should_return_not_found(client: TestClient):
-    response = client.delete('/feature-flags/other-flag')
+    response = client.delete('/v1/feature-flags/other-flag')
 
     assert response.status_code == HTTPStatus.NOT_FOUND
     assert response.json() == {'detail': 'flag not found'}

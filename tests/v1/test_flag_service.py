@@ -3,11 +3,11 @@ from http import HTTPStatus
 import pytest
 from sqlmodel import Session
 
-from app.api.feature_flags.domain.flag_model import Flag
-from app.api.feature_flags.exceptions.flag_exceptions import (
+from app.api.v1.feature_flags.domain.flag_model import Flag
+from app.api.v1.feature_flags.exceptions.flag_exceptions import (
     FlagNotFoundException,
 )
-from app.api.feature_flags.services.flag_service import (
+from app.api.v1.feature_flags.services.flag_service import (
     FlagService,
 )
 
