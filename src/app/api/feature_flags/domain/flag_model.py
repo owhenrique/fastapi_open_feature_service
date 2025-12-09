@@ -14,9 +14,8 @@ class OperationalStatusEnum(StrEnum):
     PERCENTUAL_ROLLOUT = 'percentual_rollout'
 
 
-class FeatureFlag(TimeStampMixin, table=True):
+class Flag(TimeStampMixin, table=True):
     # Todo: write this model a docstring
-
     id: UUID = Field(default_factory=uuid4, primary_key=True)
     name: str = Field(unique=True)
     technical_key: str = Field(index=True, unique=True)

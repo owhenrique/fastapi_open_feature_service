@@ -8,8 +8,8 @@ from sqlalchemy import event
 from sqlmodel import Session, SQLModel, create_engine
 from sqlmodel.pool import StaticPool
 
-from src.app.api.feature_flags.domain.feature_flag_models import (
-    FeatureFlag,
+from app.api.feature_flags.domain.flag_model import (
+    Flag,
     OperationalStatusEnum,
 )
 from src.app.core.database import get_session
@@ -69,14 +69,28 @@ def mock_db_time():
 
 
 @pytest.fixture
-def feature_flag(session) -> FeatureFlag:
-    feature_flag = FeatureFlag(
-        name='test-feature-flag-red',
+def flag(session) -> Flag:
+    flag = Flag(
+        name='test-flag-red',
         technical_key='tff00',
         operational_status=OperationalStatusEnum.ON,
     )
-    session.add(feature_flag)
+    session.add(flag)
     session.commit()
-    session.refresh(feature_flag)
+    session.refresh(flag)
 
-    return feature_flag
+    return flag
+
+
+@pytest.fixture
+def another_flag(session) -> Flag:
+    flag = Flag(
+        name='test-another-flag-red',
+        technical_key='another-tff00',
+        operational_status=OperationalStatusEnum.ON,
+    )
+    session.add(flag)
+    session.commit()
+    session.refresh(flag)
+
+    return flag
