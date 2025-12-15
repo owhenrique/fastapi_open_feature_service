@@ -1,6 +1,7 @@
 from http import HTTPStatus
+from typing import Annotated
 
-from fastapi import HTTPException
+from fastapi import Depends, HTTPException
 from fastapi.routing import APIRouter
 
 from app.api.v1.feature_flags.exceptions.flag_exceptions import (
@@ -14,12 +15,11 @@ from app.api.v1.feature_flags.schemas.flag_schemas import (
     FlagsResponseSchema,
     FlagUpdateSchema,
 )
-from app.api.v1.feature_flags.services.flag_service import (
-    FlagService,
-)
-from src.app.core.database import DBSession
+from app.api.v1.feature_flags.services.flag_service import FlagService
 
 router = APIRouter(prefix='/feature-flags', tags=['Feature Flags'])
+
+ServiceDep = Annotated[FlagService, Depends()]
 
 
 @router.post(
@@ -27,9 +27,9 @@ router = APIRouter(prefix='/feature-flags', tags=['Feature Flags'])
     response_model=FlagResponseSchema,
     status_code=HTTPStatus.CREATED,
 )
-def create_flag(flag: FlagCreateSchema, session: DBSession):
+def create_flag(flag: FlagCreateSchema, service: ServiceDep):
     try:
-        return FlagService(session).create(flag)
+        return service.create(flag)
     except (
         FlagNameAlreadyExistsException,
         FlagTechnicalKeyAlreadyExistsException,
@@ -38,8 +38,8 @@ def create_flag(flag: FlagCreateSchema, session: DBSession):
 
 
 @router.get('/', response_model=FlagsResponseSchema, status_code=HTTPStatus.OK)
-def read_flags(session: DBSession):
-    flags = FlagService(session).read_all()
+def read_flags(service: ServiceDep):
+    flags = service.read_all()
     return {'flags': flags}
 
 
@@ -48,9 +48,9 @@ def read_flags(session: DBSession):
     response_model=FlagResponseSchema,
     status_code=HTTPStatus.OK,
 )
-def read_flag(flag_technical_key: str, session: DBSession):
+def read_flag(flag_technical_key: str, service: ServiceDep):
     try:
-        return FlagService(session).read_one(flag_technical_key)
+        return service.read_one(flag_technical_key)
     except FlagNotFoundException as error:
         raise HTTPException(status_code=error.code, detail=error.message)
 
@@ -63,10 +63,10 @@ def read_flag(flag_technical_key: str, session: DBSession):
 def update_flag(
     flag_technical_key: str,
     flag: FlagUpdateSchema,
-    session: DBSession,
+    service: ServiceDep,
 ):
     try:
-        return FlagService(session).update(flag_technical_key, flag)
+        return service.update(flag_technical_key, flag)
     except (
         FlagNameAlreadyExistsException,
         FlagTechnicalKeyAlreadyExistsException,
@@ -76,8 +76,8 @@ def update_flag(
 
 
 @router.delete('/{flag_technical_key}', status_code=HTTPStatus.NO_CONTENT)
-def delete_flag(flag_technical_key: str, session: DBSession):
+def delete_flag(flag_technical_key: str, service: ServiceDep):
     try:
-        return FlagService(session).delete(flag_technical_key)
+        return service.delete(flag_technical_key)
     except FlagNotFoundException as error:
         raise HTTPException(status_code=error.code, detail=error.message)

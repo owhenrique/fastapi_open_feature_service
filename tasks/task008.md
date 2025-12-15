@@ -17,11 +17,11 @@ Garantir consistência arquitetural, eliminar duplicações, corrigir incoerênc
 - [x] Não incluir lógica de domínio na base (somente persistência).
 
 ### BaseService
-- [ ] Criar `BaseService` com responsabilidades comuns:
-  - [ ] Guardar a sessão (session)
+- [x] Criar `BaseService` com responsabilidades comuns:
+  - [x] Guardar a sessão (session)
   - [ ] Padronizar retorno/fluxo das operações
-- [ ] Evitar lógica de negócio na base.
-- [ ] `FeatureFlagService` deve herdar dela.
+- [x] Evitar lógica de negócio na base.
+- [x] `FeatureFlagService` deve herdar dela.
 
 ---
 
@@ -54,7 +54,7 @@ Garantir consistência arquitetural, eliminar duplicações, corrigir incoerênc
 ## 🧩 Parte 5 — Ajustes de Consistência Geral
 - [x] Padronizar nomes dos arquivos:
   - [x] Nada verboso demais
-  - [ ] Não usar nomes inconsistentes (ex.: `repositorie`)
+  - [x] Não usar nomes inconsistentes (ex.: `repositorie`)
 - [x] Ajustar imports quebrados
 - [ ] Verificar docstrings
 - [ ] Revisar exceções criadas na task 006

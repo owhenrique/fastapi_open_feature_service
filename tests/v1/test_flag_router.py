@@ -10,7 +10,7 @@ def test_create_should_return_created_and_flag(client: TestClient):
     payload = {
         'name': 'test-flag-blue',
         'technical_key': 'tff001',
-        'operational_status': 'off',
+        'operational_status': 'on',
     }
 
     response = client.post('/v1/feature-flags/', json=payload)

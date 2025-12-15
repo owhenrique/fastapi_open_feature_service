@@ -5,9 +5,8 @@ from app.api.v1.feature_flags.domain.flag_model import Flag
 
 
 class AbstractService(abc.ABC):
-    def __init__(self, session, repositorie):
-        self._session = session
-        self._repositorie = repositorie
+    def __init__(self, repository):
+        self._repository = repository
 
     @abc.abstractmethod
     def create(self, flag) -> Flag:

@@ -5,7 +5,7 @@ from uuid import UUID
 from app.api.v1.feature_flags.domain.flag_model import Flag
 
 
-class AbstractRepositorie(abc.ABC):
+class AbstractRepository(abc.ABC):
     def __init__(self, session):
         self._session = session
 

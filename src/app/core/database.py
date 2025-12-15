@@ -18,4 +18,4 @@ def create_db_and_tables():
     SQLModel.metadata.create_all(engine)
 
 
-DBSession = Annotated[Session, Depends(get_session)]
+SessionDep = Annotated[Session, Depends(get_session)]

@@ -1,13 +1,13 @@
 from sqlmodel import Session
 
 from app.api.v1.feature_flags.domain.flag_model import Flag
-from app.api.v1.feature_flags.repositories.flag_repositorie import (
-    FlagRepositorie,
+from app.api.v1.feature_flags.repositories.flag_repository import (
+    FlagRepository,
 )
 
 
 def test_get_by_id_should_return_flag(session: Session, flag: Flag):
-    db_flag = FlagRepositorie(session).get_by_id(flag.id)
+    db_flag = FlagRepository(session).get_by_id(flag.id)
 
     assert db_flag
     assert db_flag.name == flag.name

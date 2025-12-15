@@ -12,8 +12,8 @@ from app.api.v1.feature_flags.domain.flag_model import (
     Flag,
     OperationalStatusEnum,
 )
-from src.app.core.database import get_session
-from src.app.main import app
+from app.core.database import get_session
+from app.main import app
 
 
 @pytest.fixture(name='session')
