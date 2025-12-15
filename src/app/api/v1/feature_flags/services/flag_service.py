@@ -1,23 +1,17 @@
-from typing import Annotated, Sequence
+from typing import Sequence
 
-from fastapi import Depends
-
+from app.api.v1.feature_flags.deps.repository_dependency import RepositoryDep
 from app.api.v1.feature_flags.domain.flag_model import Flag
 from app.api.v1.feature_flags.exceptions.flag_exceptions import (
     FlagNameAlreadyExistsException,
     FlagNotFoundException,
     FlagTechnicalKeyAlreadyExistsException,
 )
-from app.api.v1.feature_flags.repositories.flag_repository import (
-    FlagRepository,
-)
 from app.api.v1.feature_flags.schemas.flag_schemas import (
     FlagCreateSchema,
     FlagUpdateSchema,
 )
 from app.api.v1.feature_flags.services.abstract_service import AbstractService
-
-RepositoryDep = Annotated[FlagRepository, Depends()]
 
 
 class FlagService(AbstractService):

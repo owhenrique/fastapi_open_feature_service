@@ -1,16 +1,13 @@
-from typing import Annotated, Sequence
+from typing import Sequence
 from uuid import UUID
 
-from fastapi import Depends
-from sqlmodel import Session, or_, select
+from sqlmodel import or_, select
 
+from app.api.v1.feature_flags.deps.session_dependency import SessionDep
 from app.api.v1.feature_flags.domain.flag_model import Flag
 from app.api.v1.feature_flags.repositories.abstract_repository import (
     AbstractRepository,
 )
-from app.core.database import get_session
-
-SessionDep = Annotated[Session, Depends(get_session)]
 
 
 class FlagRepository(AbstractRepository):
@@ -33,18 +30,6 @@ class FlagRepository(AbstractRepository):
     def get_by_technical_key(self, technical_key: str) -> Flag | None:
         return self._session.exec(
             select(Flag).where(Flag.technical_key == technical_key)
-        ).first()
-
-    def get_by_name_or_technical_key(
-        self, name=None, technical_key=None
-    ) -> Flag | None:
-        return self._session.exec(
-            select(Flag).where(
-                or_(
-                    Flag.name == name,
-                    Flag.technical_key == technical_key,
-                )
-            )
         ).first()
 
     def get_all(self) -> Sequence[Flag]:

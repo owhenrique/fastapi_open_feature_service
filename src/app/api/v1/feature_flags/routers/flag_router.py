@@ -1,9 +1,9 @@
 from http import HTTPStatus
-from typing import Annotated
 
-from fastapi import Depends, HTTPException
+from fastapi import HTTPException
 from fastapi.routing import APIRouter
 
+from app.api.v1.feature_flags.deps.service_dependency import ServiceDep
 from app.api.v1.feature_flags.exceptions.flag_exceptions import (
     FlagNameAlreadyExistsException,
     FlagNotFoundException,
@@ -15,11 +15,8 @@ from app.api.v1.feature_flags.schemas.flag_schemas import (
     FlagsResponseSchema,
     FlagUpdateSchema,
 )
-from app.api.v1.feature_flags.services.flag_service import FlagService
 
 router = APIRouter(prefix='/feature-flags', tags=['Feature Flags'])
-
-ServiceDep = Annotated[FlagService, Depends()]
 
 
 @router.post(
