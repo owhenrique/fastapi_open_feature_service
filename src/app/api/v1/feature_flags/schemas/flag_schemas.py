@@ -15,7 +15,7 @@ class FlagPublicSchema(BaseModel):
 
 
 class FlagCreateSchema(FlagPublicSchema):
-    pass
+    operational_status: OperationalStatusEnum = OperationalStatusEnum.OFF
 
 
 class FlagUpdateSchema(BaseModel):
@@ -36,3 +36,12 @@ class FlagsResponseSchema(BaseModel):
     flags: list[FlagResponseSchema]
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class FlagIsEnabledResponseSchema(BaseModel):
+    is_enabled: bool
+
+
+class FlagValueResponseSchema(BaseModel):
+    technical_key: str
+    is_enabled: bool

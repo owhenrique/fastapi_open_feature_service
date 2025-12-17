@@ -11,9 +11,11 @@ from app.api.v1.feature_flags.exceptions.flag_exceptions import (
 )
 from app.api.v1.feature_flags.schemas.flag_schemas import (
     FlagCreateSchema,
+    FlagIsEnabledResponseSchema,
     FlagResponseSchema,
     FlagsResponseSchema,
     FlagUpdateSchema,
+    FlagValueResponseSchema,
 )
 
 router = APIRouter(prefix='/feature-flags', tags=['Feature Flags'])
@@ -76,5 +78,31 @@ def update_flag(
 def delete_flag(flag_technical_key: str, service: ServiceDep):
     try:
         return service.delete(flag_technical_key)
+    except FlagNotFoundException as error:
+        raise HTTPException(status_code=error.code, detail=error.message)
+
+
+@router.get(
+    '/{flag_technical_key}/enabled/',
+    response_model=FlagIsEnabledResponseSchema,
+    status_code=HTTPStatus.OK,
+)
+def read_is_enabled(flag_technical_key: str, service: ServiceDep):
+    try:
+        is_enabled = service.is_enabled(flag_technical_key)
+        return {'is_enabled': is_enabled}
+    except FlagNotFoundException as error:
+        raise HTTPException(status_code=error.code, detail=error.message)
+
+
+@router.get(
+    '/{flag_technical_key}/value',
+    response_model=FlagValueResponseSchema,
+    status_code=HTTPStatus.OK,
+)
+def read_value(flag_technical_key: str, service: ServiceDep):
+    try:
+        is_enabled = service.is_enabled(flag_technical_key)
+        return {'technical_key': flag_technical_key, 'is_enabled': is_enabled}
     except FlagNotFoundException as error:
         raise HTTPException(status_code=error.code, detail=error.message)

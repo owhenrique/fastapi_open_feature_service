@@ -157,3 +157,59 @@ def test_delete_should_return_not_found(client: TestClient):
 
     assert response.status_code == HTTPStatus.NOT_FOUND
     assert response.json() == {'detail': 'flag not found'}
+
+
+def test_read_is_enabled_should_return_true(client: TestClient, flag: Flag):
+    response = client.get(f'/v1/feature-flags/{flag.technical_key}/enabled/')
+
+    assert response.status_code == HTTPStatus.OK
+    assert response.json() == {'is_enabled': True}
+
+
+def test_read_is_enabled_should_return_false(
+    client: TestClient, another_flag: Flag
+):
+    response = client.get(
+        f'/v1/feature-flags/{another_flag.technical_key}/enabled/'
+    )
+
+    assert response.status_code == HTTPStatus.OK
+    assert response.json() == {'is_enabled': False}
+
+
+def test_read_is_enabled_should_return_not_found_exception(client: TestClient):
+    response = client.get('/v1/feature-flags/another_flag/enabled')
+
+    assert response.status_code == HTTPStatus.NOT_FOUND
+    assert response.json() == {'detail': 'flag not found'}
+
+
+def test_read_value_should_return_ok_and_true(client: TestClient, flag: Flag):
+    response = client.get(f'/v1/feature-flags/{flag.technical_key}/value')
+
+    assert response.status_code == HTTPStatus.OK
+    assert response.json() == {
+        'technical_key': flag.technical_key,
+        'is_enabled': True,
+    }
+
+
+def test_read_value_should_return_ok_and_false(
+    client: TestClient, another_flag: Flag
+):
+    response = client.get(
+        f'/v1/feature-flags/{another_flag.technical_key}/value'
+    )
+
+    assert response.status_code == HTTPStatus.OK
+    assert response.json() == {
+        'technical_key': another_flag.technical_key,
+        'is_enabled': False,
+    }
+
+
+def test_read_value_should_not_found_exception(client: TestClient):
+    response = client.get('/v1/feature-flags/another_flag/value')
+
+    assert response.status_code == HTTPStatus.NOT_FOUND
+    assert response.json() == {'detail': 'flag not found'}

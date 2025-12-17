@@ -87,7 +87,7 @@ def another_flag(session) -> Flag:
     flag = Flag(
         name='test-another-flag-red',
         technical_key='another-tff00',
-        operational_status=OperationalStatusEnum.ON,
+        operational_status=OperationalStatusEnum.OFF,
     )
     session.add(flag)
     session.commit()
