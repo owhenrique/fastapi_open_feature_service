@@ -1,4 +1,4 @@
-# TASK-008 — Refatoração Estrutural + BaseClasses + Correções Arquiteturais
+# TASK 08 — Refatoração Estrutural + BaseClasses + Correções Arquiteturais
 
 ## 🎯 Objetivo Geral
 Garantir consistência arquitetural, eliminar duplicações, corrigir incoerências e introduzir abstrações fundamentais (BaseRepository e BaseService), preparando o projeto para maior escala e para as tasks mais avançadas.
