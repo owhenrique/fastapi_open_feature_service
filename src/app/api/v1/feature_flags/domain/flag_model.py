@@ -19,4 +19,6 @@ class Flag(TimeStampMixin, table=True):
     id: UUID = Field(default_factory=uuid4, primary_key=True)
     name: str = Field(unique=True)
     technical_key: str = Field(index=True, unique=True)
-    operational_status: OperationalStatusEnum
+    operational_status: OperationalStatusEnum = Field(
+        default=OperationalStatusEnum.OFF
+    )
