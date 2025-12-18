@@ -8,6 +8,7 @@ from sqlalchemy import event
 from sqlmodel import Session, SQLModel, create_engine
 from sqlmodel.pool import StaticPool
 
+from app.api.v1.feature_flags.domain.flag_context_model import FlagContext
 from app.api.v1.feature_flags.domain.flag_model import (
     Flag,
     OperationalStatusEnum,
@@ -94,3 +95,8 @@ def another_flag(session) -> Flag:
     session.refresh(flag)
 
     return flag
+
+
+@pytest.fixture(name='context')
+def flag_context() -> FlagContext:
+    return FlagContext(environment='prod', actor='user')

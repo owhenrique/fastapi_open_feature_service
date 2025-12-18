@@ -16,3 +16,8 @@ class FlagTechnicalKeyAlreadyExistsException(CustomException):
 class FlagNotFoundException(CustomException):
     code = HTTPStatus.NOT_FOUND
     message = 'flag not found'
+
+
+class FlagContextValidationException(CustomException):
+    code = HTTPStatus.BAD_REQUEST
+    message = 'context isnt correct'

@@ -3,11 +3,13 @@ from http import HTTPStatus
 import pytest
 from sqlmodel import Session
 
+from app.api.v1.feature_flags.domain.flag_context_model import FlagContext
 from app.api.v1.feature_flags.domain.flag_model import (
     Flag,
     OperationalStatusEnum,
 )
 from app.api.v1.feature_flags.exceptions.flag_exceptions import (
+    FlagContextValidationException,
     FlagNotFoundException,
 )
 from app.api.v1.feature_flags.repositories.flag_repository import (
@@ -69,3 +71,65 @@ def test_is_enabled_should_return_not_found_exception(session: Session):
 
     assert error.value.message == 'flag not found'
     assert error.value.code == HTTPStatus.NOT_FOUND
+
+
+def test_is_enabled_with_context_should_return_true(
+    session: Session, flag: Flag, context: FlagContext
+):
+    repository = FlagRepository(session)
+    service = FlagService(repository)
+
+    flag_is_enabled = service.is_enabled_with_context(
+        flag.technical_key, str(context.environment), str(context.actor)
+    )
+
+    assert flag_is_enabled is True
+    assert flag.operational_status == OperationalStatusEnum.ON
+
+
+def test_is_enabled_with_context_should_return_false(
+    session: Session, another_flag: Flag, context: FlagContext
+):
+    repository = FlagRepository(session)
+    service = FlagService(repository)
+
+    flag_isnt_enabled = service.is_enabled_with_context(
+        another_flag.technical_key,
+        str(context.environment),
+        str(context.actor),
+    )
+
+    assert flag_isnt_enabled is False
+    assert another_flag.operational_status == OperationalStatusEnum.OFF
+
+
+def test_is_enabled_with_context_should_return_not_found_exception(
+    session: Session, context: FlagContext
+):
+    repository = FlagRepository(session)
+    service = FlagService(repository)
+
+    with pytest.raises(FlagNotFoundException) as error:
+        service.is_enabled_with_context(
+            'another-flag', str(context.environment), str(context.actor)
+        )
+
+    assert error.value.message == 'flag not found'
+    assert error.value.code == HTTPStatus.NOT_FOUND
+
+
+def test_is_enabled_with_context_should_return_validation_exception(
+    session: Session, flag: Flag
+):
+    repository = FlagRepository(session)
+    service = FlagService(repository)
+
+    with pytest.raises(FlagContextValidationException) as error:
+        service.is_enabled_with_context(
+            flag.technical_key,
+            environment='',   # type: ignore
+            actor='actor',
+        )
+
+    assert error.value.message == 'context isnt correct'
+    assert error.value.code == HTTPStatus.BAD_REQUEST

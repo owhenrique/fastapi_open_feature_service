@@ -208,8 +208,60 @@ def test_read_value_should_return_ok_and_false(
     }
 
 
-def test_read_value_should_not_found_exception(client: TestClient):
+def test_read_value_should_return_not_found_exception(client: TestClient):
     response = client.get('/v1/feature-flags/another_flag/value')
 
     assert response.status_code == HTTPStatus.NOT_FOUND
     assert response.json() == {'detail': 'flag not found'}
+
+
+def test_read_enabled_context_should_return_ok_and_true(
+    client: TestClient, flag: Flag
+):
+    params = {'environment': 'prod', 'actor': 'user'}
+    response = client.get(
+        f'/v1/feature-flags/{flag.technical_key}/enabled/context',
+        params=params,
+    )
+
+    assert response.status_code == HTTPStatus.OK
+    assert response.json() == {'is_enabled': True}
+
+
+def test_read_enabled_context_should_return_ok_and_false(
+    client: TestClient, another_flag: Flag
+):
+    params = {'environment': 'prod', 'actor': 'user'}
+    response = client.get(
+        f'/v1/feature-flags/{another_flag.technical_key}/enabled/context',
+        params=params,
+    )
+
+    assert response.status_code == HTTPStatus.OK
+    assert response.json() == {'is_enabled': False}
+
+
+def test_read_enabled_context_should_return_not_found_exception(
+    client: TestClient,
+):
+    params = {'environment': 'prod', 'actor': 'user'}
+    response = client.get(
+        '/v1/feature-flags/another-flag/enabled/context', params=params
+    )
+
+    assert response.status_code == HTTPStatus.NOT_FOUND
+    assert response.json() == {'detail': 'flag not found'}
+
+
+def test_read_enabled_context_should_return_context_validation_exception(
+    client: TestClient, flag: Flag
+):
+    params = {
+        'environment': '',
+    }
+    response = client.get(
+        f'/v1/feature-flags/{flag.technical_key}/enabled/context',
+        params=params,
+    )
+
+    assert response.status_code == HTTPStatus.UNPROCESSABLE_ENTITY

@@ -1,11 +1,15 @@
 from typing import Sequence
 
+from pydantic import ValidationError
+
 from app.api.v1.feature_flags.deps.repository_dependency import RepositoryDep
+from app.api.v1.feature_flags.domain.flag_context_model import FlagContext
 from app.api.v1.feature_flags.domain.flag_model import (
     Flag,
     OperationalStatusEnum,
 )
 from app.api.v1.feature_flags.exceptions.flag_exceptions import (
+    FlagContextValidationException,
     FlagNameAlreadyExistsException,
     FlagNotFoundException,
     FlagTechnicalKeyAlreadyExistsException,
@@ -93,6 +97,26 @@ class FlagService(AbstractService):
 
     def is_enabled(self, identifier: str) -> bool:
         instance = self._repository.get_by_technical_key(identifier)
+
+        if instance is None:
+            raise FlagNotFoundException
+
+        if instance.operational_status is not OperationalStatusEnum.ON:
+            return False
+
+        return True
+
+    def is_enabled_with_context(
+        self, identifier: str, environment: str, actor: str
+    ) -> bool:
+        instance = self._repository.get_by_technical_key(identifier)
+
+        context_data = {'environment': environment, 'actor': actor}
+
+        try:
+            context = FlagContext.model_validate(context_data)  # noqa: F841
+        except ValidationError:
+            raise FlagContextValidationException
 
         if instance is None:
             raise FlagNotFoundException

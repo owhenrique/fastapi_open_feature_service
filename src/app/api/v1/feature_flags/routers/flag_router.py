@@ -106,3 +106,20 @@ def read_value(flag_technical_key: str, service: ServiceDep):
         return {'technical_key': flag_technical_key, 'is_enabled': is_enabled}
     except FlagNotFoundException as error:
         raise HTTPException(status_code=error.code, detail=error.message)
+
+
+@router.get(
+    '/{flag_technical_key}/enabled/context',
+    response_model=FlagIsEnabledResponseSchema,
+    status_code=HTTPStatus.OK,
+)
+def read_is_enabled_with_context(
+    flag_technical_key: str, environment: str, actor: str, service: ServiceDep
+):
+    try:
+        flag_is_enabled = service.is_enabled_with_context(
+            flag_technical_key, environment, actor
+        )
+        return {'is_enabled': flag_is_enabled}
+    except FlagNotFoundException as error:
+        raise HTTPException(status_code=error.code, detail=error.message)

@@ -20,9 +20,9 @@ class FlagRepository(AbstractRepository):
         self._session.refresh(obj)
 
     def get_by_id(self, identifier: UUID) -> Flag | None:
-        return self._session.exec(select(Flag).where(
-            Flag.id == identifier
-        )).first()
+        return self._session.exec(
+            select(Flag).where(Flag.id == identifier)
+        ).first()
 
     def get_by_name(self, name: str) -> Flag | None:
         return self._session.exec(
